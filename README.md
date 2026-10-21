@@ -9,7 +9,11 @@ Página web de Dental Villadent (Villa Poeta José Gálvez): servicios, precios 
 - **Servicios y precios**: al pasar por cada servicio, la boca muestra dónde se trabaja (brackets en ortodoncia, blanqueamiento, piezas con caries...). Al hacer clic se elige en la reserva.
 - **Por dentro de un diente**: un molar cortado con esmalte, dentina, pulpa, cemento, encía y hueso. Con el deslizador la caries avanza y te dice qué curación corresponde y su precio.
 - **Tu primera visita**: los cuatro pasos.
-- **Reserva**: tocas el diente que te molesta en la boca 3D, eliges servicio, paciente, turno y día, y se abre WhatsApp al 987 916 866 con el mensaje listo.
+- **Reserva**: tocas el diente que te molesta en la boca 3D, eliges servicio y paciente, y la página muestra los días y horas libres de verdad (según la agenda de la clínica en Google Calendar). Al agendar te da un código y un botón para enviar la cita por WhatsApp al 987 916 866.
+
+## Conectar la agenda de la clínica
+
+Sigue `apps-script/LEEME.md` (unos 10 minutos con la cuenta de Google de la clínica) y pega la URL en `src/config.js`. Mientras esté vacía, la reserva funciona en modo demostración.
 
 ## Cómo verla
 
@@ -28,9 +32,10 @@ Página web de Dental Villadent (Villa Poeta José Gálvez): servicios, precios 
 | Mini odontólogos, escaleras, sogas y espuma | `src/scene/crew.js` |
 | Molar cortado | `src/scene/tooth.js` |
 | Escena, cámara y juego | `src/scene/scene.js` |
-| Servicios, capas, caries y WhatsApp | `src/page/booking.js` |
+| Servicios, capas, caries y formulario de reserva | `src/page/booking.js` |
+| Conexión con la agenda (y modo demostración) | `src/page/agenda.js`, `src/config.js` |
+| Servidor de la agenda (Google Apps Script) | `apps-script/` |
 
 Para cambiar precios: edítalos en `index.html` (lista de servicios) y en `VERDICTS` de `src/page/booking.js`.
 
 Después de editar `index.html` o `src/`, vuelve a generar `Dental Villadent.html` con Claude (o usa `npm run build`).
-# villadent

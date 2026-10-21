@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dental Villadent · Odontología para niños y adultos</title>
+<meta name="description" content="Dental Villadent: curaciones, limpieza con flúor, blanqueamiento láser, prótesis y ortodoncia en Villa Poeta José Gálvez. Reserva por WhatsApp al 987 916 866.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="src/styles.css">
+<!-- Sin build: el navegador resuelve las librerías desde jsDelivr. Con Vite (npm run dev) se usa node_modules. -->
+<script type="importmap">
+{"imports":{
+  "three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
+  "three/addons/":"https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/",
+  "lenis":"https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.mjs"
+}}
+</script>
+</head>
+<body>
+
+<!-- Escenario fijo: la boca 3D vive detrás de toda la página y viaja entre secciones -->
+<canvas id="scene" aria-label="Boca en 3D: un equipo de odontólogos en miniatura la limpia y cura sus caries"></canvas>
+<div class="fx" id="fx" aria-hidden="true"></div>
+<div class="pins" id="pins"></div>
+<div class="tags3d" id="tags" aria-hidden="true"></div>
+<div class="split" id="split" aria-hidden="true"><span class="sl before">Antes</span><i class="knob"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M9 6l-6 6 6 6M15 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></i><span class="sl after">Con brackets</span></div>
+
+<main id="main">
+
+<section class="sec hero" id="inicio" data-pose="hero" aria-label="Inicio">
+  <div class="notch top">
+    <a class="logo" href="#inicio" aria-label="Dental Villadent, inicio">
+      <svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M9.5 4.5c-3.6 0-6 2.9-6 6.8 0 3 1.2 5.3 2.3 8.3.9 2.6 1.3 7.9 3.6 7.9 2.1 0 2.4-4.4 3.3-6.4.6-1.3 1.3-1.9 3.3-1.9s2.7.6 3.3 1.9c.9 2 1.2 6.4 3.3 6.4 2.3 0 2.7-5.3 3.6-7.9 1.1-3 2.3-5.3 2.3-8.3 0-3.9-2.4-6.8-6-6.8-2.6 0-3.9 1.4-6.5 1.4S12.1 4.5 9.5 4.5z" fill="currentColor"/><path d="M8 10.5c.6-1.8 1.8-2.7 3.4-2.7" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg>
+      <span>Dental <b>Villadent</b></span>
+    </a>
+  </div>
+  <nav class="nav" aria-label="Secciones">
+    <a href="#servicios">Precios</a>
+    <a href="#ortodoncia">Ortodoncia</a>
+    <a href="#por-dentro">Por dentro</a>
+    <a href="#reserva" class="nav-cta">Reservar</a>
+    <button class="sound" id="soundBtn" type="button" aria-pressed="true" aria-label="Sonido">
+      <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path class="w" d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+  </nav>
+  <div class="notch bottom"><button class="next" id="nextBtn" type="button" aria-label="Siguiente sección">
+    <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v13M6 12l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button></div>
+
+  <div class="copy">
+    <h1>No dejes de sonreír.</h1>
+    <p class="lede">Odontología para niños y adultos en Villa Poeta José Gálvez. Mira a nuestro equipo en miniatura dejar esta sonrisa limpia y sin caries.</p>
+    <div class="actions">
+      <a class="btn primary" href="#reserva">Reservar cita</a>
+      <a class="btn ghost" href="#servicios">Ver precios</a>
+    </div>
+  </div>
+
+  <aside class="clean-card" aria-live="polite">
+    <div class="cc-top"><span><span class="cc-now">Limpieza en curso</span><span class="cc-ok">Sonrisa lista</span></span><b id="cleanPct">0%</b></div>
+    <div class="odo" id="odo" aria-label="Odontograma: cada pieza se pinta cuando queda limpia"></div>
+    <div class="cc-foot"><span>Caries por curar: <b id="cariesN">3</b></span><button class="link" id="againBtn" type="button">Ver otra vez</button></div>
+    <p class="cc-hint">Toca a un odontólogo para saludarlo.</p>
+  </aside>
+  </section>
+
+<section class="sec care" id="servicios" data-pose="care" aria-labelledby="t-serv">
+  <div class="care-col">
+    <div class="sec-head">
+      <h2 id="t-serv">Servicios y precios</h2>
+      <p>Pasa el cursor por cada servicio y mira en la boca dónde trabajamos.</p>
+    </div>
+    <ul class="menu" id="menu">
+      <li data-mode="resinas" data-serv="Curación simple"><div><h3>Curación simple</h3><p>Caries pequeña, solo en el esmalte.</p></div><b>S/ 25</b></li>
+      <li data-mode="resinas" data-serv="Curación compuesta"><div><h3>Curación compuesta</h3><p>La caries ya llegó a la dentina.</p></div><b>S/ 35</b></li>
+      <li data-mode="endodoncia" data-serv="Curación compleja"><div><h3>Curación compleja</h3><p>Caries profunda, cerca del nervio.</p></div><b>S/ 60</b></li>
+      <li data-mode="limpieza" data-serv="Limpieza completa + flúor"><div><h3>Limpieza completa + flúor</h3><p>Retiramos placa y sarro, y protegemos el esmalte.</p></div><b>S/ 50</b></li>
+      <li data-mode="blanqueamiento" data-serv="Limpieza + blanqueamiento láser"><div><h3>Limpieza + blanqueamiento láser</h3><p>Dientes varios tonos más claros en una sesión.</p></div><b>S/ 150</b></li>
+      <li data-mode="protesis" data-serv="Prótesis fija o removible"><div><h3>Prótesis fijas y removibles</h3><p>Reemplazamos las piezas que faltan.</p></div><b class="ask">Consultar</b></li>
+      <li data-mode="ortodoncia" data-serv="Ortodoncia con brackets"><div><h3>Ortodoncia con brackets</h3><p>Ordenamos la mordida; pagas por mes.</p></div><b>S/ 100<small>al mes</small></b></li>
+    </ul>
+    <p class="promo"><span class="tag">Solo por este mes</span> Precios de promoción. Confírmalos al reservar por WhatsApp.</p>
+  </div>
+</section>
+
+<section class="sec ortho" id="ortodoncia" data-pose="ortho" aria-labelledby="t-orto">
+  <div class="ortho-head">
+    <h2 id="t-orto">De chuecos a derechos</h2>
+    <p>Mueve el mouse sobre la boca. A un lado, dientes apiñados; al otro, los mismos dientes alineados con brackets.</p>
+  </div>
+  <div class="ortho-foot">
+    <p class="of-price"><span>Ortodoncia con brackets metálicos</span><b>S/ 100<small>al mes</small></b></p>
+    <a class="btn primary" href="#reserva" data-serv="Ortodoncia con brackets">Reservar evaluación</a>
+  </div>
+</section>
+
+<section class="sec inside" id="por-dentro" data-pose="inside" aria-labelledby="t-dentro">
+  <div class="inside-col">
+    <div class="sec-head">
+      <h2 id="t-dentro">Por dentro de un diente</h2>
+      <p>Un molar cortado por la mitad. Toca cada capa para saber qué hace.</p>
+    </div>
+    <div class="layers" id="layers" role="tablist" aria-label="Capas del diente">
+      <button type="button" role="tab" data-layer="esmalte">Esmalte</button>
+      <button type="button" role="tab" data-layer="dentina">Dentina</button>
+      <button type="button" role="tab" data-layer="pulpa">Pulpa y nervio</button>
+      <button type="button" role="tab" data-layer="cemento">Cemento</button>
+      <button type="button" role="tab" data-layer="encia">Encía</button>
+      <button type="button" role="tab" data-layer="hueso">Hueso</button>
+    </div>
+    <p class="layer-text" id="layerText" aria-live="polite">El esmalte protege, la dentina siente y la pulpa guarda el nervio. Elige una capa.</p>
+    <div class="caries">
+      <label for="cariesRange">¿Hasta dónde llegó la caries?</label>
+      <input id="cariesRange" type="range" min="0" max="100" value="0">
+      <div class="verdict" id="verdict" aria-live="polite">
+        <p class="v-text">Diente sano. Mantenlo así con una limpieza cada seis meses.</p>
+        <p class="v-serv"><span>Limpieza completa + flúor</span><b>S/ 50</b></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec visit" id="visita" data-pose="visit" aria-labelledby="t-visita">
+  <div class="visit-col">
+    <div class="sec-head">
+      <h2 id="t-visita">Tu primera visita</h2>
+      <p>Atendemos a niños y adultos. Revisamos pieza por pieza, sin apuros y explicándote cada paso.</p>
+    </div>
+    <ol class="steps">
+      <li><h3>Escríbenos</h3><p>Por WhatsApp al 987 916 866. Te damos el día y la hora.</p></li>
+      <li><h3>Revisamos tu boca</h3><p>Vemos cada pieza y te mostramos lo que encontramos.</p></li>
+      <li><h3>Te damos el precio</h3><p>Antes de empezar sabes cuánto cuesta y cuántas citas son.</p></li>
+      <li><h3>Empezamos</h3><p>Si estás de acuerdo, ese mismo día hacemos la limpieza o la curación.</p></li>
+    </ol>
+  </div>
+</section>
+
+<section class="sec book" id="reserva" data-pose="book" aria-labelledby="t-reserva">
+  <div class="sec-head">
+    <h2 id="t-reserva">Reserva tu cita</h2>
+    <p>Elige un horario libre y tu cita queda en la agenda de la clínica.</p>
+  </div>
+  <div class="book-card">
+    <div class="hole" aria-label="Boca 3D: toca el diente que te molesta">
+      <p class="step-t"><span class="n">1</span>¿Qué diente te molesta?</p>
+      <p class="picked" id="picked">Tócalo en la boca. Si no sabes cuál es, sigue sin elegir.</p>
+    </div>
+    <div class="book-right" data-lenis-prevent>
+    <form class="form" id="bookForm" novalidate>
+      <div class="step">
+        <p class="step-t" id="lg-serv"><span class="n">2</span>Servicio</p>
+        <div class="chips" role="radiogroup" aria-labelledby="lg-serv" data-name="serv">
+          <button type="button" class="opt on" data-v="Evaluación">Evaluación</button><button type="button" class="opt" data-v="Curación simple">Curación simple</button><button type="button" class="opt" data-v="Curación compuesta">Curación compuesta</button><button type="button" class="opt" data-v="Curación compleja">Curación compleja</button><button type="button" class="opt" data-v="Limpieza completa + flúor">Limpieza + flúor</button><button type="button" class="opt" data-v="Limpieza + blanqueamiento láser">Blanqueamiento láser</button><button type="button" class="opt" data-v="Prótesis fija o removible">Prótesis</button><button type="button" class="opt" data-v="Ortodoncia con brackets">Ortodoncia</button>
+        </div>
+        <div class="chips who" role="radiogroup" aria-label="Paciente" data-name="who">
+          <button type="button" class="opt on" data-v="Adulto">Adulto</button><button type="button" class="opt" data-v="Niño o niña">Niño o niña</button>
+        </div>
+      </div>
+      <div class="step">
+        <p class="step-t"><span class="n">3</span>Día y hora</p>
+        <div class="days" id="days" role="radiogroup" aria-label="Día"></div>
+        <div class="slots" id="slots" role="radiogroup" aria-label="Hora"></div>
+        <p class="slots-msg" id="slotsMsg" aria-live="polite">Cargando horarios libres…</p>
+      </div>
+      <div class="row2">
+        <div class="field"><label for="f-name"><span class="n">4</span>Tu nombre</label><input id="f-name" name="name" autocomplete="name" placeholder="Nombre y apellido" required maxlength="80"></div>
+        <div class="field"><label for="f-phone"><span class="n">5</span>Celular</label><input id="f-phone" name="tel" type="tel" inputmode="numeric" autocomplete="tel-national" placeholder="9 dígitos" required maxlength="11"></div>
+      </div>
+      <input class="hp" type="text" name="web" id="f-web" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <label class="consent"><input type="checkbox" id="f-ok"> Acepto que Dental Villadent use mis datos para gestionar mi cita.</label>
+      <div class="row-end">
+        <p class="err" id="formErr" role="alert"></p>
+        <button class="btn primary submit" type="submit" id="bookBtn">Agendar cita</button>
+      </div>
+      <p class="demo-note" id="demoNote" hidden>Modo demostración: los horarios son de ejemplo y la cita no llega a la clínica.</p>
+    </form>
+    <div class="done" id="done" hidden aria-live="polite">
+      <p class="done-k"><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="currentColor"/><path d="M7 12.5l3.2 3.2L17 9" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Cita agendada</p>
+      <h3 id="dnWhen"></h3>
+      <dl>
+        <dt>Servicio</dt><dd id="dnServ"></dd>
+        <dt>Paciente</dt><dd id="dnWho"></dd>
+        <dt>Pieza</dt><dd id="dnTooth"></dd>
+        <dt>Nombre</dt><dd id="dnName"></dd>
+        <dt>Código</dt><dd id="dnCode"></dd>
+      </dl>
+      <p class="done-tip">Envía tu cita por WhatsApp: la clínica la confirma por ahí.</p>
+      <div class="done-actions">
+        <a class="btn wa" id="waBtn" target="_blank" rel="noopener">
+          <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.7.3-.2.3-.9.9-.9 2.2s.9 2.5 1 2.7c.1.2 1.8 2.8 4.4 3.9 1.6.7 2.3.8 3.1.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3z"/></svg>
+          Enviar por WhatsApp
+        </a>
+        <button class="link" type="button" id="againBook">Agendar otra cita</button>
+      </div>
+    </div>
+    </div>
+  </div>
+</section>
+
+<footer class="foot" data-pose="away">
+  <p class="mega" id="mega" aria-label="Villadent"></p>
+  <div class="foot-grid">
+    <div><h3>Escríbenos</h3><p><a href="https://wa.me/51987916866">WhatsApp 987 916 866</a></p></div>
+    <div><h3>Visítanos</h3><p>Mz. 74 Lote 6, Parcela "B"<br>Pj. Villa Poeta José Gálvez, Paradero 9</p></div>
+    <div><h3>Atendemos</h3><p>Niños y adultos</p></div>
+  </div>
+  <p class="foot-note">Precios de promoción del mes; pueden cambiar. Confírmalos al reservar.</p>
+</footer>
+
+</main>
+
+<script type="module" src="src/main.js"></script>
+</body>
+</html>

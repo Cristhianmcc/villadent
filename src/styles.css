@@ -1,0 +1,311 @@
+/* Dental Villadent
+   Un lienzo 3D fijo llena la pantalla; cada sección es una tarjeta celeste enmarcada
+   en azul noche, transparente por dentro para que la boca viaje detrás de todas. */
+:root{
+  --frame-c:#0F2A4A;   /* marco azul noche */
+  --card:#EAF2FA;      /* celeste pálido: el fondo de la escena */
+  --ink:#0F2542;
+  --ink-soft:#4A5F7D;
+  --blue:#1E63C6;
+  --blue-deep:#164C9C;
+  --sky:#4FB6E8;
+  --sun:#F7D23E;       /* amarillo del volante: solo para la promo */
+  --wa:#128C4A;
+  --white:#FFFFFF;
+  --line:rgba(15,37,66,.12);
+  --frame:14px;
+  --display:'Bricolage Grotesque', 'Segoe UI', system-ui, sans-serif;
+  --text:'Hanken Grotesk', 'Segoe UI', system-ui, sans-serif;
+  --spring:cubic-bezier(.34,1.56,.64,1);
+  --ease:cubic-bezier(.22,.8,.2,1);
+  color-scheme: light;
+}
+html.lenis, html.lenis body{height:auto}
+.lenis.lenis-smooth{scroll-behavior:auto !important}
+body{margin:0;background:var(--frame-c);color:var(--ink);font-family:var(--text);font-size:17px;line-height:1.5;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--sky);outline-offset:3px}
+h1,h2,h3{font-family:var(--display);font-optical-sizing:auto;margin:0}
+
+/* ── Escenario fijo ── */
+#scene{position:fixed;inset:0;width:100vw;height:100vh;display:block;z-index:0;touch-action:pan-y;background:var(--card)}
+#scene.pointer{cursor:pointer}
+.fx{position:fixed;inset:0;pointer-events:none;z-index:6;overflow:hidden}
+
+/* ── Secciones: pantalla completa, transparentes; el clic pasa a la boca ── */
+main{position:relative;z-index:2;pointer-events:none}
+.sec{position:relative;min-height:100vh;box-sizing:border-box;overflow:clip;display:flex;flex-direction:column;gap:clamp(18px,2.4vw,32px);
+  padding:calc(var(--frame) + 84px) calc(var(--frame) + clamp(24px,4.4vw,72px)) calc(var(--frame) + 64px)}
+.sec::before{content:"";position:absolute;inset:var(--frame);border-radius:34px;pointer-events:none;z-index:0;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.65), 0 0 0 140px var(--frame-c)}
+.sec > *{position:relative;z-index:1}
+.sec a,.sec button,.sec input,.sec label,.sec li,.clean-card,.verdict,.form,.foot{pointer-events:auto}
+.sec-head h2{font-weight:800;font-size:clamp(40px,4.8vw,84px);line-height:.95;letter-spacing:-.035em;text-wrap:balance}
+.sec-head p{margin:14px 0 0;font-size:clamp(16px,1.25vw,20px);color:var(--ink-soft);max-width:34ch;text-wrap:pretty}
+
+/* ── Muescas del hero ── */
+.notch{position:absolute !important;left:50%;transform:translateX(-50%);z-index:3;background:var(--frame-c);color:var(--white)}
+.notch.top{top:0;padding:10px 30px 14px;border-radius:0 0 24px 24px}
+.notch.bottom{bottom:0;padding:10px 26px 6px;border-radius:24px 24px 0 0}
+.notch::before,.notch::after{content:"";position:absolute;width:24px;height:24px}
+.notch.top::before{top:var(--frame);left:-24px;background:radial-gradient(circle at 0 100%, transparent 23.5px, var(--frame-c) 24px)}
+.notch.top::after{top:var(--frame);right:-24px;background:radial-gradient(circle at 100% 100%, transparent 23.5px, var(--frame-c) 24px)}
+.notch.bottom::before{bottom:var(--frame);left:-24px;background:radial-gradient(circle at 0 0, transparent 23.5px, var(--frame-c) 24px)}
+.notch.bottom::after{bottom:var(--frame);right:-24px;background:radial-gradient(circle at 100% 0, transparent 23.5px, var(--frame-c) 24px)}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:var(--display);font-size:20px;font-weight:500;letter-spacing:-.01em;white-space:nowrap}
+.logo b{font-weight:800}
+.logo .mark{width:26px;height:26px;color:var(--sky)}
+.next{border:0;background:none;color:var(--white);cursor:pointer;display:grid;place-items:center;width:44px;height:34px;transition:transform .35s var(--spring)}
+.next:hover{transform:translateY(3px)}
+.next.up svg{transform:rotate(180deg)}
+.nav{position:absolute !important;top:calc(var(--frame) + 16px);right:calc(var(--frame) + 20px);z-index:3;display:flex;align-items:center;gap:4px}
+.nav a{font-size:15px;font-weight:600;text-decoration:none;padding:9px 14px;border-radius:999px;transition:background .2s}
+.nav a:hover{background:rgba(255,255,255,.7)}
+.nav a.nav-cta{background:var(--ink);color:var(--white);margin-left:6px}
+.nav a.nav-cta:hover{background:var(--blue)}
+.sound{border:0;border-radius:50%;width:40px;height:40px;margin-left:6px;cursor:pointer;background:var(--white);color:var(--ink);display:grid;place-items:center;transition:transform .35s var(--spring)}
+.sound:hover{transform:scale(1.08)}
+.sound[aria-pressed="false"] .w{opacity:.15}
+
+/* ── Botones ── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;border:0;cursor:pointer;font:600 17px/1 var(--text);text-decoration:none;border-radius:999px;padding:17px 26px;
+  transition:transform .35s var(--spring), background .2s, box-shadow .2s}
+.btn:hover{transform:translateY(-2px)}
+.btn:active{transform:translateY(1px)}
+.btn.primary{background:var(--blue);color:var(--white);box-shadow:0 14px 28px -14px rgba(30,99,198,.8)}
+.btn.primary:hover{background:var(--blue-deep)}
+.btn.ghost{color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--ink)}
+.btn.wa{background:var(--wa);color:var(--white);box-shadow:0 14px 28px -14px rgba(18,140,74,.8)}
+.link{border:0;background:none;padding:0;cursor:pointer;font:600 14px var(--text);color:var(--blue);text-decoration:underline;text-underline-offset:3px}
+
+/* ── Hero ── */
+.hero{justify-content:center}
+.copy{position:absolute !important;left:calc(var(--frame) + clamp(24px,4.4vw,72px));top:50%;transform:translateY(-46%);width:min(40vw,560px);display:flex;flex-direction:column;gap:22px}
+h1{font-weight:800;font-size:clamp(52px,6.4vw,118px);line-height:.9;letter-spacing:-.045em;text-wrap:balance;animation:rise 1s var(--ease) .15s both}
+.lede{margin:0;font-size:clamp(17px,1.3vw,20px);color:var(--ink-soft);max-width:36ch;animation:rise 1s var(--ease) .3s both}
+.actions{display:flex;gap:12px;flex-wrap:wrap;animation:rise 1s var(--ease) .45s both}
+
+/* la tarjeta del juego: un odontograma que se pinta pieza por pieza */
+.clean-card{position:absolute !important;right:calc(var(--frame) + clamp(20px,3vw,48px));bottom:calc(var(--frame) + 30px);width:300px;box-sizing:border-box;padding:18px 20px 16px;
+  background:rgba(255,255,255,.86);backdrop-filter:blur(14px);border-radius:22px;box-shadow:0 24px 50px -30px rgba(15,37,66,.5);display:flex;flex-direction:column;gap:12px;animation:rise 1s var(--ease) .7s both}
+.cc-top{display:flex;justify-content:space-between;align-items:baseline;font-size:14px;font-weight:600;color:var(--ink-soft)}
+.cc-top b{font-family:var(--display);font-size:38px;font-weight:800;color:var(--ink);letter-spacing:-.03em;font-variant-numeric:tabular-nums;line-height:1}
+.odo{display:flex;flex-direction:column;gap:6px;padding:12px 0;border-block:1px solid var(--line)}
+.odo-row{display:flex;justify-content:center;gap:3px}
+.odo-row i{width:18px;height:22px;border-radius:7px 7px 9px 9px;background:#D9E3EE;position:relative;transition:background .4s, transform .4s var(--spring)}
+.odo-row:first-child i{border-radius:9px 9px 7px 7px}
+.odo-row i:nth-child(6){margin-right:7px}
+.odo-row i.on{background:var(--sky);transform:translateY(-2px)}
+.odo-row i.on::after{content:"";position:absolute;left:4px;top:4px;width:5px;height:7px;border-radius:3px;background:rgba(255,255,255,.85)}
+.cc-foot{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:14px;color:var(--ink-soft)}
+.cc-foot b{color:var(--ink);font-variant-numeric:tabular-nums}
+.cc-hint{margin:0;font-size:12.5px;color:var(--ink-soft)}
+.cc-ok{display:none;color:var(--blue-deep)}
+.clean-card.done .cc-now{display:none}
+.clean-card.done .cc-ok{display:inline}
+#againBtn{visibility:hidden}
+.clean-card.finished #againBtn{visibility:visible}
+.touch-note{display:none}
+
+/* ── Servicios y precios: carta a la izquierda, la boca a la derecha ── */
+.care{justify-content:center}
+.care-col,.inside-col,.visit-col{width:min(46vw,640px);display:flex;flex-direction:column;gap:clamp(18px,2.4vh,28px)}
+.menu{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+.menu li{display:flex;justify-content:space-between;align-items:center;gap:24px;padding:14px 18px;margin:0 -18px;border-bottom:1px solid var(--line);cursor:pointer;border-radius:16px;
+  transition:background .25s, border-color .25s, transform .4s var(--spring)}
+.menu li:hover,.menu li.on,.menu li:focus-visible{background:var(--white);border-bottom-color:transparent;transform:translateX(6px)}
+.menu h3{font-size:clamp(19px,1.5vw,24px);font-weight:700;letter-spacing:-.015em;line-height:1.15}
+.menu p{margin:3px 0 0;font-size:15px;color:var(--ink-soft)}
+.menu b{font-family:var(--display);font-size:clamp(24px,2vw,34px);font-weight:800;letter-spacing:-.03em;white-space:nowrap;text-align:right;line-height:1;transition:color .25s}
+.menu b small{display:block;font-family:var(--text);font-size:12px;font-weight:600;letter-spacing:0;color:var(--ink-soft);margin-top:4px}
+.menu b.ask{font-size:18px;font-family:var(--text);font-weight:600;color:var(--ink-soft)}
+.menu li.on b:not(.ask),.menu li:hover b:not(.ask){color:var(--blue)}
+.promo{margin:0;display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-size:14px;color:var(--ink-soft)}
+.tag{background:var(--sun);color:var(--ink);font-weight:700;font-size:13px;padding:6px 12px;border-radius:999px;transform:rotate(-2deg);display:inline-block}
+
+/* ── Ortodoncia: antes / después con el mouse ── */
+.ortho{justify-content:space-between}
+.ortho-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px 48px;flex-wrap:wrap}
+.ortho-head h2{font-weight:800;font-size:clamp(40px,4.8vw,84px);line-height:.95;letter-spacing:-.035em;max-width:9ch}
+.ortho-head p{margin:0;font-size:clamp(16px,1.25vw,20px);color:var(--ink-soft);max-width:30ch;text-wrap:pretty}
+.ortho-foot{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
+.of-price{margin:0;display:flex;flex-direction:column;gap:2px}
+.of-price span{font-size:15px;color:var(--ink-soft)}
+.of-price b{font-family:var(--display);font-size:clamp(34px,3vw,52px);font-weight:800;letter-spacing:-.03em;line-height:1}
+.of-price small{font-family:var(--text);font-size:15px;font-weight:600;color:var(--ink-soft);margin-left:8px;letter-spacing:0}
+.split{position:fixed;left:0;top:0;z-index:3;width:0;pointer-events:none;opacity:0;transition:opacity .35s}
+.split.on{opacity:1}
+.split::before{content:"";position:absolute;left:-1px;top:0;bottom:0;width:2px;background:linear-gradient(transparent,var(--white) 12%,var(--white) 88%,transparent);box-shadow:0 0 12px rgba(15,37,66,.25)}
+.knob{position:absolute;left:-23px;top:50%;margin-top:-23px;width:46px;height:46px;border-radius:50%;background:var(--white);color:var(--ink);display:grid;place-items:center;box-shadow:0 10px 24px -8px rgba(15,37,66,.5)}
+.sl{position:absolute;top:-6px;white-space:nowrap;font-size:14px;font-weight:700;padding:6px 12px;border-radius:999px;background:var(--white);box-shadow:0 8px 18px -10px rgba(15,37,66,.5)}
+.sl.before{right:14px}
+.sl.after{left:14px;background:var(--ink);color:var(--white)}
+
+/* ── Por dentro ── */
+.inside{justify-content:center}
+.inside-col{width:min(40vw,540px)}
+.layers{display:flex;flex-wrap:wrap;gap:8px}
+.layers button,.opt{border:0;cursor:pointer;font:600 15px var(--text);color:var(--ink);background:rgba(255,255,255,.55);border-radius:999px;padding:10px 16px;
+  box-shadow:inset 0 0 0 1px var(--line);transition:background .2s, color .2s, transform .3s var(--spring)}
+.layers button:hover,.opt:hover{transform:translateY(-2px);background:var(--white)}
+.layers button.on,.opt.on{background:var(--ink);color:var(--white);box-shadow:none}
+.layer-text{margin:0;min-height:4.6em;font-size:clamp(16px,1.2vw,19px);max-width:44ch;text-wrap:pretty}
+.caries{display:flex;flex-direction:column;gap:14px}
+.caries label{font-family:var(--display);font-size:clamp(20px,1.6vw,26px);font-weight:700;letter-spacing:-.015em}
+.caries input{-webkit-appearance:none;appearance:none;width:100%;height:14px;border-radius:999px;cursor:pointer;margin:6px 0;
+  background:linear-gradient(90deg,#F4EFE2 0 30%,#EBCF95 30% 72%,#E8A07A 72% 88%,#DE5F66 88%)}
+.caries input::-webkit-slider-thumb{-webkit-appearance:none;width:34px;height:34px;border-radius:50%;background:#3B2618;border:5px solid var(--white);box-shadow:0 6px 14px -4px rgba(15,37,66,.5);transition:transform .3s var(--spring)}
+.caries input:active::-webkit-slider-thumb{transform:scale(1.12)}
+.caries input::-moz-range-thumb{width:24px;height:24px;border-radius:50%;background:#3B2618;border:5px solid var(--white)}
+.verdict{background:var(--white);border-radius:20px;padding:18px 20px;display:flex;flex-direction:column;gap:12px;box-shadow:0 20px 40px -30px rgba(15,37,66,.5);transition:box-shadow .3s}
+.verdict[data-stage="4"]{box-shadow:inset 0 0 0 2px #DE5F66, 0 20px 40px -30px rgba(222,95,102,.8)}
+.v-text{margin:0;font-size:16px}
+.v-serv{margin:0;display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding-top:12px;border-top:1px solid var(--line)}
+.v-serv span{font-weight:700}
+.v-serv b{font-family:var(--display);font-size:28px;font-weight:800;color:var(--blue);letter-spacing:-.03em}
+
+/* etiquetas sobre el molar 3D */
+.pins{position:fixed;inset:0;z-index:3;pointer-events:none;opacity:0;transition:opacity .4s}
+.pins.on{opacity:1}
+.pin{position:absolute;left:0;top:0;border:0;padding:0;background:none;cursor:pointer;pointer-events:auto;font:600 13px var(--text);color:var(--ink)}
+.pins:not(.on) .pin{pointer-events:none}
+.pin::before{content:"";position:absolute;left:-6px;top:-6px;width:12px;height:12px;border-radius:50%;background:var(--white);box-shadow:0 0 0 3px var(--ink);transition:transform .3s var(--spring)}
+.pin span{position:absolute;left:14px;top:-13px;white-space:nowrap;background:var(--white);padding:4px 10px;border-radius:999px;box-shadow:0 8px 18px -10px rgba(15,37,66,.6);transition:background .2s, color .2s}
+.pin:hover::before,.pin.on::before{transform:scale(1.3)}
+.pin.on span,.pin:hover span{background:var(--ink);color:var(--white)}
+
+/* etiquetas que salen sobre cada pieza revisada */
+.tags3d{position:fixed;inset:0;z-index:3;pointer-events:none}
+.tag3d.warn{background:var(--sun);color:var(--ink)}
+.tag3d{position:absolute;left:0;top:0;white-space:nowrap;font:700 13px var(--text);color:var(--white);background:var(--ink);padding:5px 11px;border-radius:999px;box-shadow:0 8px 18px -8px rgba(15,37,66,.6)}
+
+/* ── Primera visita: una secuencia real, por eso numerada ── */
+.visit{justify-content:center}
+.steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px 36px;counter-reset:s}
+.steps li{counter-increment:s;display:flex;flex-direction:column;gap:6px;padding-top:16px;border-top:2px solid var(--ink)}
+.steps li::before{content:counter(s);font-family:var(--display);font-size:54px;font-weight:800;line-height:.9;color:var(--blue);letter-spacing:-.04em}
+.steps h3{font-size:22px;font-weight:700;letter-spacing:-.015em}
+.steps p{margin:0;font-size:16px;color:var(--ink-soft)}
+
+/* ── Reserva: tarjeta blanca con un hueco a la izquierda donde se ve la boca ── */
+.book .sec-head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px 40px;flex-wrap:wrap}
+.book .sec-head p{margin:0}
+.book-card{position:relative;flex:1;max-height:min(74vh,720px);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.08fr);gap:clamp(20px,2.6vw,40px);
+  padding:clamp(14px,1.4vw,24px);border-radius:34px;overflow:hidden;isolation:isolate}
+.hole{position:relative;border-radius:24px;box-shadow:0 0 0 200vmax var(--white);padding:20px 22px;display:flex;flex-direction:column;justify-content:space-between;z-index:-1;min-height:360px}
+.step-t{margin:0;display:flex;align-items:center;gap:12px;font-family:var(--display);font-size:clamp(18px,1.4vw,22px);font-weight:700;letter-spacing:-.01em}
+.n{width:28px;height:28px;border-radius:50%;background:var(--ink);color:var(--white);font:700 14px var(--text);display:inline-grid;place-items:center;flex:none}
+.picked{margin:0;align-self:center;text-align:center;font-size:16px;background:rgba(255,255,255,.9);padding:10px 16px;border-radius:999px;pointer-events:auto;max-width:100%}
+.picked b{color:var(--blue)}
+.form[hidden]{display:none}
+.form{display:flex;flex-direction:column;gap:clamp(14px,2.2vh,24px);padding:clamp(6px,1vw,14px) clamp(6px,1vw,14px) clamp(6px,1vw,14px) 0;min-width:0;overflow:auto}
+.step{display:flex;flex-direction:column;gap:12px}
+.row2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.opt{font-size:14px;padding:9px 14px;background:var(--card)}
+.field{display:flex;flex-direction:column;gap:10px;min-width:0}
+.field label{display:flex;align-items:center;gap:12px;font-family:var(--display);font-size:clamp(18px,1.4vw,22px);font-weight:700}
+.field input{font:500 16px var(--text);color:var(--ink);background:var(--card);border:1.5px solid transparent;border-radius:14px;padding:13px 16px;outline:none;transition:border-color .2s, background .2s;min-width:0}
+.field input:focus{border-color:var(--blue);background:var(--white)}
+.form .preview{background:#E7F6EC;border-radius:16px 16px 16px 4px;padding:12px 16px;align-self:flex-start;max-width:100%;box-sizing:border-box}
+.pv-t{margin:0 0 6px;font-size:12px;font-weight:700;color:var(--wa)}
+.preview pre{margin:0;font:500 14px/1.5 var(--text);white-space:pre-wrap;overflow-wrap:anywhere}
+.row-end{display:flex;gap:14px;align-items:center;justify-content:flex-end;flex-wrap:wrap;margin-top:auto}
+.err{margin:0 auto 0 0;font-size:14px;font-weight:600;color:#B42318;min-height:1.2em}
+.preview{display:none}
+@media (min-height:880px){.preview{display:block}}
+.sent{margin:0;font-size:14px;color:var(--wa);font-weight:600;text-align:right}
+
+/* reserva con agenda real */
+.book-card{grid-template-rows:minmax(0,1fr);max-height:min(calc(100vh - 275px),720px)}
+.book-right .opt{padding:7px 12px;font-size:13.5px}
+.book-right .step{gap:9px}
+.book-right .field{gap:6px}
+.book-right .field input{padding:11px 14px}
+.book-right{min-height:0;min-width:0;display:flex;flex-direction:column;overflow:auto;padding:clamp(6px,1vw,14px) clamp(6px,1vw,14px) clamp(6px,1vw,14px) 0;pointer-events:auto}
+.book-right .form{padding:0;overflow:visible;gap:clamp(12px,1.8vh,20px)}
+.form.loading .days,.form.loading .slots{opacity:.5}
+.chips.who{margin-top:2px}
+.chips.who .opt{padding:7px 12px;font-size:13px}
+.days{display:flex;gap:6px;overflow-x:auto;padding:2px 2px 6px;scrollbar-width:thin;scroll-snap-type:x proximity}
+.day{flex:none;width:56px;border:0;cursor:pointer;border-radius:14px;padding:8px 0 7px;background:var(--card);color:var(--ink);display:flex;flex-direction:column;align-items:center;gap:1px;font:500 12px var(--text);scroll-snap-align:start;transition:background .2s, color .2s, transform .3s var(--spring)}
+.day b{font-family:var(--display);font-size:22px;font-weight:700;line-height:1}
+.day small{font-size:11.5px;color:inherit;opacity:.75;text-transform:lowercase}
+.day:hover:not(:disabled){transform:translateY(-2px)}
+.day.on{background:var(--ink);color:var(--white)}
+.day:disabled{opacity:.35;cursor:default}
+.slots{display:flex;flex-wrap:wrap;gap:6px}
+.slots .part{flex-basis:100%;font-size:12px;font-weight:600;color:var(--ink-soft);margin-top:4px}
+.slot{border:0;cursor:pointer;border-radius:10px;padding:8px 11px;background:var(--card);color:var(--ink);font:600 13.5px var(--text);font-variant-numeric:tabular-nums;transition:background .2s, color .2s}
+.slot:hover{background:#DCE8F5}
+.slot.on{background:var(--blue);color:var(--white)}
+.slots-msg{margin:0;font-size:14px;color:var(--ink-soft)}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+.consent{display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--ink-soft);cursor:pointer}
+.consent input{width:18px;height:18px;margin:1px 0 0;accent-color:var(--blue);flex:none}
+.demo-note{margin:0;font-size:12.5px;color:var(--ink-soft);background:#FFF6D6;border-radius:10px;padding:8px 12px}
+.done{display:flex;flex-direction:column;gap:14px;margin:auto 0;padding:clamp(6px,1vw,14px) 0}
+.done[hidden]{display:none}
+.done.pop{animation:rise .6s var(--ease)}
+.done-k{margin:0;display:flex;align-items:center;gap:10px;font-weight:700;color:var(--wa)}
+.done h3{font-size:clamp(26px,2.4vw,38px);font-weight:800;letter-spacing:-.03em;line-height:1.05}
+.done dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:8px 18px;font-size:15px;padding:14px 0;border-block:1px solid var(--line)}
+.done dt{color:var(--ink-soft)}
+.done dd{margin:0;font-weight:600;overflow-wrap:anywhere}
+.done-tip{margin:0;font-size:14px;color:var(--ink-soft)}
+.done-actions{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+
+/* ── Footer (opaco: tapa la boca) ── */
+.foot{position:relative;margin:0 var(--frame) var(--frame);border-radius:34px;background:var(--blue-deep);color:var(--white);padding:clamp(56px,9vh,110px) clamp(24px,4.4vw,72px) 34px;display:flex;flex-direction:column;gap:clamp(32px,5vh,56px);overflow:hidden;min-height:70vh;justify-content:flex-end;align-items:stretch;text-align:left;box-sizing:border-box;
+  box-shadow:0 0 0 80px var(--frame-c), 0 40px 0 40px var(--frame-c)}
+.foot .mega{margin:0 auto;font-family:var(--display);font-weight:800;font-size:clamp(80px,18vw,330px);line-height:.8;letter-spacing:-.06em;white-space:nowrap;user-select:none;color:var(--sky);text-align:center;width:100%}
+.foot .mega span{display:inline-block;transform-origin:50% 100%;transform:translateY(60%);opacity:0;transition:transform .9s var(--spring) calc(var(--i) * 60ms), opacity .5s ease calc(var(--i) * 60ms), color .3s}
+.foot .mega.in span{transform:none;opacity:1}
+.foot .mega span:hover{color:var(--white)}
+.foot .mega span.bounce{animation:bounce .7s var(--spring)}
+@keyframes bounce{0%{transform:none}25%{transform:translateY(-14%) scale(1.06,.94)}55%{transform:translateY(2%) scale(.96,1.05)}100%{transform:none}}
+.foot-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;border-top:1px solid rgba(255,255,255,.22);padding-top:24px}
+.foot h3{font-size:14px;font-weight:600;color:rgba(255,255,255,.7);margin-bottom:6px;font-family:var(--text)}
+.foot p{margin:0;font-size:18px}
+.foot a{text-decoration:none;border-bottom:1.5px solid var(--sky)}
+.foot-note{font-size:13px !important;color:rgba(255,255,255,.65)}
+
+/* ── Partículas de interfaz ── */
+.spark{position:absolute;width:var(--s,14px);height:var(--s,14px);margin:calc(var(--s,14px)/-2) 0 0 calc(var(--s,14px)/-2);background:var(--c);
+  clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%);animation:spark var(--t,.75s) ease-out forwards}
+@keyframes spark{0%{transform:translate(0,0) scale(.2) rotate(0);opacity:1}40%{opacity:1}100%{transform:translate(var(--dx),var(--dy)) scale(1) rotate(160deg);opacity:0}}
+@keyframes rise{from{transform:translateY(22px);opacity:0}to{transform:none;opacity:1}}
+
+/* ── Pantallas medianas ── */
+@media (max-width:1180px){
+  .copy{width:min(44vw,520px)}
+  .clean-card{width:250px;padding:14px 16px}
+  .odo-row i{width:15px;height:19px}
+  .nav a:not(.nav-cta){display:none}
+}
+/* ── Celular y tablet: el texto va en tarjetas sobre la boca ── */
+@media (max-width:860px){
+  .sec{padding:calc(var(--frame) + 76px) calc(var(--frame) + 18px) calc(var(--frame) + 56px)}
+  .copy{position:relative !important;left:auto;top:auto;transform:none;width:auto;margin-top:auto}
+  .hero{justify-content:flex-end}
+  .care-col,.inside-col,.visit-col{width:auto;background:rgba(255,255,255,.88);backdrop-filter:blur(10px);border-radius:24px;padding:20px}
+  .care,.inside,.visit{justify-content:flex-end}
+  .menu li{margin:0 -10px;padding:12px 10px}
+  .clean-card{display:none}
+  .steps{grid-template-columns:minmax(0,1fr)}
+  .book-card{grid-template-columns:minmax(0,1fr);max-height:none}
+  .hole{min-height:46vh}
+  .row2{grid-template-columns:minmax(0,1fr)}
+  .foot-grid{grid-template-columns:minmax(0,1fr)}
+  .logo span{font-size:17px}
+  .nav{right:calc(var(--frame) + 10px)}
+  .nav a.nav-cta{display:none}
+}
+.touch .touch-note{display:block;position:relative;margin:0;font-size:14px;color:var(--ink-soft)}
+.no3d #scene{display:none}
+.no3d body{background:var(--card)}
+@media (prefers-reduced-motion: reduce){
+  .foot .mega span{transform:none;opacity:1}
+  h1,.lede,.actions,.clean-card{animation:none}
+  *{transition-duration:.01ms !important}
+}
